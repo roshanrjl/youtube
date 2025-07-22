@@ -10,8 +10,8 @@ import playlistRoute from "./routes/playlist.route.js"
 import subscriptionRoute from "./routes/subscription.routes.js"
 import tweetRoute from "./routes/tweet.routes.js"
 import videoRoute from "./routes/video.routes.js"
-
-import "./config/passport.config.js";
+import "./config/password.config.js";
+import { errorHandler } from "./middlewares/errorHandler.middlewares.js"
 
 const app = express();
 
@@ -51,5 +51,5 @@ app.use("/api/v1/subscription", subscriptionRoute);
 app.get("/", (req, res) => {
   res.send("Hello, Morgan!");
 });
-
+app.use(errorHandler);
 export default app;

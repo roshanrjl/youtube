@@ -4,9 +4,11 @@ import app  from "./app.js";
 import { validateEnv } from "./utils/validateEnv.js";
 import { COLORS } from "./constants.js";
 
+
 dotenv.config({
   path: "./.env",
 });
+
 
 validateEnv();
 
