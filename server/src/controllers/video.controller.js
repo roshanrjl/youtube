@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { converToHLs } from "../ffmpeg/ffmpegUtils.js";
+import { getVideoDurationInSeconds } from "get-video-duration";
 
 //controller for getall videos
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -59,50 +59,53 @@ const getAllVideos = asyncHandler(async (req, res) => {
 //controller for publishing video
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
-  // TODO: get video, upload to cloudinary, create video
+
   if (!req.files || !req.files.video) {
     return res
       .status(400)
       .json({ success: false, message: "No video file uploaded" });
   }
-  const thumbnailpath = req.file.thumbnail?.[0].path;
+  const thumbnailpath = req.files.thumbnail?.[0].path;
+ 
 
-  if(!thumbnailpath){
-    throw new ApiError(400, "couldnot found the thumbnail")
+  if (!thumbnailpath) {
+    throw new ApiError(400, "couldnot found the thumbnail");
   }
-  const thumbnailresult = await uploadOnCloudinary(thumbnailpath)
-  
-  if(!thumbnailresult){
-    throw new ApiError(500, "something went wrong while uploading to the cloudinary")
+  const thumbnailresult = await uploadOnCloudinary(thumbnailpath);
+
+  if (!thumbnailresult) {
+    throw new ApiError(
+      500,
+      "something went wrong while uploading to the cloudinary"
+    );
   }
   const videopath = req.files.video?.[0].path;
 
 
   if (!videopath) {
     throw new ApiError(400, "videopath didn't found");
-
   }
-  const outputFolder = `uploads/hls/${Date.now()}`
-
-    let hlsPlaylistPath;
-
+  let duration;
   try {
-    hlsPlaylistPath = await converToHLs(videopath, outputFolder);
+    duration = await getVideoDurationInSeconds(videopath);
+    console.log("Duration in seconds:", duration);
   } catch (error) {
-    console.error('HLS conversion error:', error);
-    throw new ApiError(500, "Video conversion to HLS failed");
+    console.error("Error getting duration:", error);
+    duration = 0; // fallback if needed
   }
-   const coudinaryresult = await uploadOnCloudinary(outputFolder)
+  const coudinaryresult = await uploadOnCloudinary(videopath);
+  console.log("checking response from cloudinary for video:",coudinaryresult)
 
   if (!coudinaryresult.url) {
     throw new ApiError(400, "couldn't found the video url from cloudinary");
   }
   const myvideo = await Video.create({
     videoFile: coudinaryresult.url,
-    thumbnail:thumbnailresult.url,
+    thumbnail: thumbnailresult.url,
+    duration,
     title: title,
     description: description,
-    user: req.user._id,
+    owner: req.user._id,
   });
 
   return res
@@ -112,6 +115,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 //controller for getting video by id
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  console.log("checking the videoId:",videoId)
   const user = req.user._id;
   if (!videoId) {
     throw new ApiError(400, "didn't get video id");
@@ -127,7 +131,7 @@ const getVideoById = asyncHandler(async (req, res) => {
     throw new ApiError(400, "could get the video");
   }
 
-  if (getvideo.user.toStrng() !== user.toStrng()) {
+  if (getvideo.owner.toString() !== user.toString()) {
     throw new ApiError(403, "invalid user cannot access the video");
   }
   return res
@@ -153,7 +157,7 @@ const updateVideo = asyncHandler(async (req, res) => {
   }
 
   // 3. Check ownership (⚠️ Your schema uses 'user', not 'owner'?)
-  if (findVideo.user.toString() !== user.toString()) {
+  if (findVideo.owner.toString() !== user.toString()) {
     throw new ApiError(403, "Unauthorized: You cannot edit this video");
   }
 
@@ -231,15 +235,16 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   video.isPublished = !video.isPublished;
   await video.save();
 
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      video,
-      `Video is now ${video.isPublished ? "published" : "unpublished"}`
-    )
-  );
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        video,
+        `Video is now ${video.isPublished ? "published" : "unpublished"}`
+      )
+    );
 });
-
 
 export {
   getAllVideos,

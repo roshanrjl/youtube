@@ -3,7 +3,7 @@ import fs from "fs"
 import path from "path"
 
 export const converToHLs= (inputpath , outputFolder)=>{
-    return new  promise((resolve, reject)=>{
+    return new  Promise((resolve, reject)=>{
         if(!fs.existsSync(outputFolder)){
             fs.mkdirSync(outputFolder,{recursive:true})
         }
