@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 const toggleSubscription = asyncHandler(async (req, res) => {
-  // TODO: toggle subscription
+  
   const { channelId } = req.params;
   const subscriberId = req.user._id;
 
@@ -38,6 +38,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 // controller to return subscriber list of a channel
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
+  console.log("the channelId is:",channelId)
 
   if (!channelId) {
     throw new ApiError(400, "channelId is required");

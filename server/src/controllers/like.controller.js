@@ -71,7 +71,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     });
     return res
       .status(200)
-      .json(200, newlikedComment, "comment like successfully");
+      .json(new ApiResponse(200, {}, "comment liked successfully"));
   }
 });
 

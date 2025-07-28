@@ -11,8 +11,9 @@ const router = Router()
 router.use(verifyJWT)
 
 router.route("/").get(createTweet)
-router.route("/user/:userId").get(getUserTweets)
-router.route("/:userId").patch(updateTweet).delete(deleteTweet)
+router.route("/user/:channelId").get(getUserTweets)
+router.route("/:tweetId").patch(updateTweet).delete(deleteTweet)
+
 
 
 
