@@ -19,3 +19,19 @@ apiClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export const createTweet = () => {
+  return apiClient.get("tweet/");
+};
+
+export const getUserTweets = (channelId) => {
+  return apiClient.get(`tweet/user/${channelId}`);
+};
+
+export const updateTweet = (tweetId) => {
+  return apiClient.patch(`tweet/${tweetId}`);
+};
+
+export const deleteTweet = (tweetId) => {
+  return apiClient.delete(`tweet/${tweetId}`);
+};

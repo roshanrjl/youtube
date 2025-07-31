@@ -100,8 +100,8 @@ const updateTweet = asyncHandler(async (req, res) => {
   const { newcontent } = req.body;
   const { tweetId } = req.params;
   const user = req.user._id;
-  console.log("tweet id is :", tweetId)
-  console.log("the new condtents is:",newcontent)
+  console.log("tweet id is :", tweetId);
+  console.log("the new condtents is:", newcontent);
   if (!tweetId) {
     throw new ApiError(400, "couldn't found the tweet Id");
   }

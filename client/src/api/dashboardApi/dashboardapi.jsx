@@ -19,3 +19,13 @@ apiClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+ export const getChannelStats= ()=>{
+  return apiClient.get("dashboad/stats")
+ }
+
+
+export const getChannelVideos = ()=>{
+ return apiClient.get("dashboad/videos")
+}
+    
