@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout";
-import Appslidebar from "../components/AppSidebar"; // replace with your actual pages
+import Appslidebar from "../components/AppSidebar";
+import Home from "../pages/home"; // replace with your actual pages
 
 const router = createBrowserRouter([
   {
@@ -9,7 +10,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Appslidebar />,
+        element: <Home />,
       },
     ],
   },

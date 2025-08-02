@@ -1,12 +1,4 @@
-import {
-  Home,
-  ThumbsUp,
-  Video,
-  History,
-  ListVideo,
-  Settings,
-  Users,
-} from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
 
 import {
   Sidebar,
@@ -17,8 +9,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "./components/ui/sidebar";
+} from "./components/ui/sidebar"
 
+// Menu items.
 const items = [
   {
     title: "Home",
@@ -26,43 +19,28 @@ const items = [
     icon: Home,
   },
   {
-    title: "Subscriptions",
+    title: "Inbox",
     url: "#",
-    icon: Users, 
+    icon: Inbox,
   },
   {
-    title: "Subscripted",
+    title: "Calendar",
     url: "#",
-    icon: Video, 
+    icon: Calendar,
   },
   {
-    title: "Liked Videos",
+    title: "Search",
     url: "#",
-    icon: ThumbsUp,
-  },
-  {
-    title: "Your Videos",
-    url: "#",
-    icon: Video,
-  },
-  {
-    title: "History",
-    url: "#",
-    icon: History,
-  },
-  {
-    title: "Playlist",
-    url: "#",
-    icon: ListVideo, 
+    icon: Search,
   },
   {
     title: "Settings",
     url: "#",
     icon: Settings,
   },
-];
+]
 
-export function AppSidebar() {
+export  default function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
@@ -70,12 +48,12 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map(({ title, url, icon: Icon }) => (
-                <SidebarMenuItem key={title}>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={url} className="flex items-center gap-2">
-                      <Icon className="h-4 w-4" />
-                      <span>{title}</span>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -85,7 +63,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  );
+  )
 }
-
-export default AppSidebar;
