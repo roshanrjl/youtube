@@ -23,7 +23,7 @@ const isBrowser = typeof window !== "undefined";
 
 //class to interact with localstorage safely
 
-class LocalStorage {
+class Localstorage {
   static get(key) {
     if (!isBrowser) return null;
     const value = localStorage.getItem(key);
@@ -53,5 +53,5 @@ class LocalStorage {
 export {
     requestHandler,
     isBrowser,
-    LocalStorage
+    Localstorage
 }

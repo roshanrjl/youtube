@@ -1,18 +1,15 @@
-import React from "react";
-import { Sidebar } from "@components/ui/sidebar";
-import { SidebarProvider } from "@components/ui/sidebar"; // ✅ import the provider
+import { useState } from 'react'
+import React from 'react'
+import './App.css'
+import Sidebar from './components/AppSidebar'
 
 function App() {
+ 
   return (
-    <SidebarProvider> {/* ✅ wrap with provider */}
-      <div className="min-h-screen flex">
-        <Sidebar />
-        <div className="flex-1 p-6">
-          <h1 className="text-2xl font-bold">Main Content Area</h1>
-        </div>
-      </div>
-    </SidebarProvider>
-  );
+    <>    
+     <Sidebar />
+    </>
+  )
 }
 
-export default App;
+export default App

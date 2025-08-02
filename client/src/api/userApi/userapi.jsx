@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Localstorage } from "../../utils";
+import { Localstorage } from "../../utils/index";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URI,
