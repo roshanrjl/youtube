@@ -1,12 +1,16 @@
 import { SidebarProvider, SidebarTrigger, useSidebar } from "./components/components/ui/sidebar";
 import AppSidebar from "./components/AppSidebar";
 import { Outlet } from "react-router-dom";
+import Menubar from "./components/navbar";
 
 export default function Layout() {
   return (
+    <>
+     <Menubar/>
     <SidebarProvider>
       <LayoutContent />
     </SidebarProvider>
+    </>
   );
 }
 

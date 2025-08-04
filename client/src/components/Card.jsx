@@ -10,7 +10,7 @@ function Mycard() {
   const { isSidebarOpen } = useOutletContext();
 
   return (
-    <div className="flex flex-wrap gap-x-6 gap-y-6 p-4">
+    <div className="flex flex-wrap gap-x-10 gap-y-8 p-4">
       {[...Array(12)].map((_, index) => (
         <Card
           key={index}
