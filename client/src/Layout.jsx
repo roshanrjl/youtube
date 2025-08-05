@@ -21,7 +21,7 @@ function LayoutContent() {
     <div className="flex h-screen w-full">
       <AppSidebar />
       <main className="flex-1 relative">
-        <SidebarTrigger className="absolute top-0 left-0 z-20" />
+        <SidebarTrigger className="relative top-4 left-0 z-50" />
         <div className={`pt-4 transition-all duration-300 ${isSidebarOpen ? "pl-4" : "pl-8"}`}>
           <Outlet context={{ isSidebarOpen }} />
         </div>

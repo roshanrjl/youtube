@@ -2,7 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout";
 import Appslidebar from "../components/AppSidebar";
 // import Home from "../pages/home";
-import Mycard from "../components/Card"; 
+// import Mycard from "../components/Card"; 
+import Login from "../components/login"
 
 const router = createBrowserRouter([
   {
@@ -11,7 +12,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Mycard />,
+        element: <Login />,
       },
     ],
   },
