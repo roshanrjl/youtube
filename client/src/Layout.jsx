@@ -15,7 +15,7 @@ export default function Layout() {
 }
 
 function LayoutContent() {
-  const { isSidebarOpen } = useSidebar(); // from your SidebarProvider
+  const { isSidebarOpen } = useSidebar(); 
 
   return (
     <div className="flex h-screen w-full">

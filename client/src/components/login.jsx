@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardAction,
@@ -27,7 +28,9 @@ export default function Login() {
             Enter your email to login to your account
           </CardDescription>
           <CardAction className="text-blue-600 hover:underline cursor-pointer">
-            Signup
+           <Link to="/singup">
+           Signup
+           </Link> 
           </CardAction>
         </CardHeader>
 

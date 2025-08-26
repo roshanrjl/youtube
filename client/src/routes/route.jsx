@@ -1,10 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout";
-import Appslidebar from "../components/AppSidebar";
-// import Home from "../pages/home";
-// import Mycard from "../components/Card"; 
+import Home from "../pages/home";
 import Login from "../components/login"
 import Signup from "../components/signup"
+
 
 const router = createBrowserRouter([
   {
@@ -12,9 +11,18 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        index: true,
-        element: <Signup />,
+        path:"",
+        element: <Home />,
       },
+      {
+        path:"login",
+        element:<Login/>
+
+      },
+      {
+        path:"singup",
+        element:<Signup/>
+      }
     ],
   },
 ]);

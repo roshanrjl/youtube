@@ -27,6 +27,7 @@ function Mycard() {
             <p>
               Video content from backend. Lorem ipsum dolor sit amet
               consectetur adipisicing elit. Ullam maiores quibusdam.
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consectetur molestiae et necessitatibus. Alias nesciunt ab illum explicabo voluptatum eum totam molestias accusamus, facilis necessitatibus rem illo quibusdam iste, cum placeat, magni earum quasi quo harum. Ipsa, vel quaerat illo ipsam placeat corrupti! Illo modi tempore dolore, aliquid necessitatibus consequuntur excepturi!
             </p>
           </CardContent>
           <CardFooter className="text-xs px-4 pb-4 pt-0">

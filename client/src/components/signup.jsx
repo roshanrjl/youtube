@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -8,6 +9,7 @@ import {
   CardTitle,
 } from "./components/ui/card";
 import React from "react";
+import { useState, useEffect } from "react";
 
 export default function Signup() {
   const {
@@ -15,8 +17,29 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [data, setData] = useState({
+    fullName: "",
+    userName: "",
+    email: "",
+    password: "",
+  });
+  const [file, setFile] = useState({
+    profileImage: "",
+    coverImage: "",
+  });
 
-  const onSubmit = (data) => console.log(data);
+  const handleDataChange = (name) => (e) => {
+    setData((prev) => ({
+      ...prev,
+      [name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (data) => {
+    console.log(data)
+    console.log("profileimage:",file.profileImage)
+    console.log("coverimage:",file.coverImage)
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -34,7 +57,12 @@ export default function Signup() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Full Name */}
             <div>
+              <label className="text-sm font-medium text-gray-700">
+                FullName
+              </label>
               <input
+                //value={data.fullName}
+                onChange={handleDataChange("fullName")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your full name"
                 {...register("name", {
@@ -42,13 +70,20 @@ export default function Signup() {
                 })}
               />
               {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
             {/* Username */}
             <div>
+              <label className="text-sm font-medium text-gray-700">
+                UserName
+              </label>
               <input
+               // value={data.userName}
+                onChange={handleDataChange("UserName")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your username"
                 {...register("username", {
@@ -56,14 +91,19 @@ export default function Signup() {
                 })}
               />
               {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.username.message}
+                </p>
               )}
             </div>
 
             {/* Email */}
             <div>
+              <label className="text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
+               // value={data.email}
+                onChange={handleDataChange("email")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your email"
                 {...register("email", {
@@ -77,14 +117,21 @@ export default function Signup() {
                 })}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
             {/* Password */}
             <div>
+              <label className="text-sm font-medium text-gray-700">
+                password
+              </label>
               <input
                 type="password"
+              //  value={data.password}
+                onChange={handleDataChange("password")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
                 {...register("password", {
@@ -103,8 +150,93 @@ export default function Signup() {
                 })}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
               )}
+            </div>
+
+            {/* profileImage */}
+            <div className="flex gap-6 justify-center items-center">
+              {/* Profile Image */}
+              <div className="flex flex-col items-center">
+                <label className="text-sm font-medium text-gray-700">
+                  ProfileImage
+                </label>
+                <input
+                  type="file"
+                  className="hidden"
+                  id="profileImage"
+                  {...register("profileImage", {
+                    required: "Profile image is required",
+                  })}
+                  onChange={(e) =>
+                    setFile((prev) => ({
+                      ...prev,
+                      profileImage: e.target.files[0],
+                    }))
+                  }
+                />
+                <label
+                  htmlFor="profileImage"
+                  className="w-20 h-20 rounded-full border flex items-center justify-center cursor-pointer text-gray-400 text-sm hover:border-blue-500 hover:text-blue-500"
+                >
+                  {file.profileImage ? (
+                    <img
+                      src={URL.createObjectURL(file.profileImage)}
+                      alt="profile preview"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    "Upload"
+                  )}
+                </label>
+                {errors.profileImage && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.profileImage.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Cover Image */}
+              <div className="flex flex-col items-center">
+                <label className="text-sm font-medium text-gray-700">
+                  CoverImage
+                </label>
+                <input
+                  type="file"
+                  className="hidden"
+                  id="coverImage"
+                  {...register("coverImage", {
+                    required: "Cover image is required",
+                  })}
+                  onChange={(e) =>
+                    setFile((prev) => ({
+                      ...prev,
+                      coverImage: e.target.files[0],
+                    }))
+                  }
+                />
+                <label
+                  htmlFor="coverImage"
+                  className="w-20 h-20 rounded-full border flex items-center justify-center cursor-pointer text-gray-400 text-sm hover:border-blue-500 hover:text-blue-500"
+                >
+                  {file.coverImage ? (
+                    <img
+                      src={URL.createObjectURL(file.coverImage)}
+                      alt="cover preview"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    "Upload"
+                  )}
+                </label>
+                {errors.coverImage && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.coverImage.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -122,7 +254,7 @@ export default function Signup() {
             <p>
               Already have an account?{" "}
               <span className="text-blue-600 hover:underline cursor-pointer">
-                Login
+                <Link to="/login">Login</Link>
               </span>
             </p>
           </div>

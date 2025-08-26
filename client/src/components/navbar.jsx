@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Menubar() {
   return (
@@ -16,9 +17,10 @@ function Menubar() {
       </div>
 
       <div className="flex items-center gap-4 text-xl text-white dark:text-gray-100 cursor-pointer">
-        <button title="Upload">⬆️ Upload</button>
-        <button title="Notifications">🔔</button>
-        <button title="Login">Login</button>
+        <Link to="upload">Upload</Link>
+        <Link to="notification">🔔</Link>
+        <Link to="login">Login</Link>
+       
       </div>
     </header>
   );
