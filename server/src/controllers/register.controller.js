@@ -27,6 +27,10 @@ const generateAccessAndRefereshTokens = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, username, password } = req.body;
 
+   if(!fullName || !email ||!username || !password){
+  throw new ApiError(401,"some value are missing among fullName, email, username, password")
+ }
+
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
@@ -35,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User with email or username already exists");
   }
 
-  const avatarFile = req.files?.avatar?.[0];
+  const avatarFile = req.files?.profileImage?.[0];
   const coverImageFile = req.files?.coverImage?.[0];
 
   if (!avatarFile || !coverImageFile) {

@@ -3,7 +3,7 @@ import { ApiError } from "./ApiError.js";
 const requiredEnvVars = [
   "PORT",
   "MONGODB_URI",
-  "CROS_ORIGIN",               
+  "CORS_ORIGIN",               
   "ACCESS_TOKEN_SECRET",
   "ACCESS_TOKEN_EXPIRES",      
   "REFRESH_TOKEN_SECRET",

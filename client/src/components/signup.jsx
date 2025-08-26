@@ -1,5 +1,7 @@
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -8,54 +10,47 @@ import {
   CardHeader,
   CardTitle,
 } from "./components/ui/card";
-import React from "react";
-import { useState, useEffect } from "react";
 import { registers } from "../redux/authSlice";
-import { useDispatch } from "react-redux";
 
 export default function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { error, isloading } = useSelector((state) => state.auth);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [data, setData] = useState({
-    fullName: "",
-    userName: "",
-    email: "",
-    password: "",
-  });
+
   const [file, setFile] = useState({
-    profileImage: "",
-    coverImage: "",
+    profileImage: null,
+    coverImage: null,
   });
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const handleDataChange = (name) => (e) => {
-    setData((prev) => ({
-      ...prev,
-      [name]: e.target.value,
-    }));
-  };
+  const onSubmit = async (data) => {
+  const formData = new FormData();
+  formData.append("fullName", data.fullName);
+  formData.append("username", data.userName);
+  formData.append("email", data.email);
+  formData.append("password", data.password);
+  formData.append("profileImage", file.profileImage);
+  formData.append("coverImage", file.coverImage);
 
-  const onSubmit = async () => {
-
-    const formData = new FormData();
-    formData.append("fullName", data.fullName);
-    formData.append("username", data.userName);
-    formData.append("email", data.email);
-    formData.append("password", data.password);
-    formData.append("profileImage", file.profileImage);
-    formData.append("coverImage", file.coverImage);
-    try {
-      const response = await dispatch(registers(formData));
-      console.log("infromation from backend:", response);
+  try {
+    const resultAction = await dispatch(registers(formData));
+    if (registers.fulfilled.match(resultAction)) {
+      alert("Registration successful!");
       navigate("/login");
-    } catch (error) {
-      console.error("something went wrong while registering...", error);
+    } else {
+      
+      alert(resultAction.payload || "Registration failed");
     }
-  };
+  } catch (error) {
+    alert(error.message || "Something went wrong");
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -74,20 +69,17 @@ export default function Signup() {
             {/* Full Name */}
             <div>
               <label className="text-sm font-medium text-gray-700">
-                FullName
+                Full Name
               </label>
               <input
-                //value={data.fullName}
-                onChange={handleDataChange("fullName")}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type="text"
                 placeholder="Enter your full name"
-                {...register("name", {
-                  required: "Full Name is required",
-                })}
+                {...register("fullName", { required: "Full Name is required" })}
+                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.name && (
+              {errors.fullName && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.name.message}
+                  {errors.fullName.message}
                 </p>
               )}
             </div>
@@ -95,20 +87,17 @@ export default function Signup() {
             {/* Username */}
             <div>
               <label className="text-sm font-medium text-gray-700">
-                UserName
+                Username
               </label>
               <input
-                // value={data.userName}
-                onChange={handleDataChange("UserName")}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type="text"
                 placeholder="Enter your username"
-                {...register("username", {
-                  required: "Username is required",
-                })}
+                {...register("userName", { required: "Username is required" })}
+                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.username && (
+              {errors.userName && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.username.message}
+                  {errors.userName.message}
                 </p>
               )}
             </div>
@@ -118,19 +107,15 @@ export default function Signup() {
               <label className="text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
-                // value={data.email}
-                onChange={handleDataChange("email")}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your email"
                 {...register("email", {
                   required: "Email is required",
-                  validate: {
-                    matchPattern: (value) =>
-                      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-                        value
-                      ) || "Email address must be valid",
+                  pattern: {
+                    value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                    message: "Email must be valid",
                   },
                 })}
+                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">
@@ -142,16 +127,13 @@ export default function Signup() {
             {/* Password */}
             <div>
               <label className="text-sm font-medium text-gray-700">
-                password
+                Password
               </label>
               <input
                 type="password"
-                //  value={data.password}
-                onChange={handleDataChange("password")}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
                 {...register("password", {
-                  required: "Password field is required",
+                  required: "Password is required",
                   validate: {
                     minLength: (value) =>
                       value.length >= 8 ||
@@ -164,6 +146,7 @@ export default function Signup() {
                       "Password must contain at least one number",
                   },
                 })}
+                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">
@@ -172,7 +155,7 @@ export default function Signup() {
               )}
             </div>
 
-            {/* profileImage */}
+            {/* Profile & Cover Images Side by Side */}
             <div className="flex gap-6 justify-center items-center">
               {/* Profile Image */}
               <div className="flex flex-col items-center">
@@ -183,15 +166,13 @@ export default function Signup() {
                   type="file"
                   className="hidden"
                   id="profileImage"
-                  {...register("profileImage", {
-                    required: "Profile image is required",
-                  })}
                   onChange={(e) =>
                     setFile((prev) => ({
                       ...prev,
                       profileImage: e.target.files[0],
                     }))
                   }
+                  accept="image/*"
                 />
                 <label
                   htmlFor="profileImage"
@@ -200,18 +181,13 @@ export default function Signup() {
                   {file.profileImage ? (
                     <img
                       src={URL.createObjectURL(file.profileImage)}
-                      alt="profile preview"
+                      alt="Profile Preview"
                       className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     "Upload"
                   )}
                 </label>
-                {errors.profileImage && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.profileImage.message}
-                  </p>
-                )}
               </div>
 
               {/* Cover Image */}
@@ -223,15 +199,13 @@ export default function Signup() {
                   type="file"
                   className="hidden"
                   id="coverImage"
-                  {...register("coverImage", {
-                    required: "Cover image is required",
-                  })}
                   onChange={(e) =>
                     setFile((prev) => ({
                       ...prev,
                       coverImage: e.target.files[0],
                     }))
                   }
+                  accept="image/*"
                 />
                 <label
                   htmlFor="coverImage"
@@ -240,18 +214,13 @@ export default function Signup() {
                   {file.coverImage ? (
                     <img
                       src={URL.createObjectURL(file.coverImage)}
-                      alt="cover preview"
+                      alt="Cover Preview"
                       className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     "Upload"
                   )}
                 </label>
-                {errors.coverImage && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.coverImage.message}
-                  </p>
-                )}
               </div>
             </div>
 
@@ -269,9 +238,9 @@ export default function Signup() {
           <div className="w-full text-center text-sm text-gray-600">
             <p>
               Already have an account?{" "}
-              <span className="text-blue-600 hover:underline cursor-pointer">
-                <Link to="/login">Login</Link>
-              </span>
+              <Link className="text-blue-600 hover:underline" to="/login">
+                Login
+              </Link>
             </p>
           </div>
         </CardFooter>
