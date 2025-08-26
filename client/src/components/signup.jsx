@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -10,6 +10,8 @@ import {
 } from "./components/ui/card";
 import React from "react";
 import { useState, useEffect } from "react";
+import { registers } from "../redux/authSlice";
+import { useDispatch } from "react-redux";
 
 export default function Signup() {
   const {
@@ -27,6 +29,8 @@ export default function Signup() {
     profileImage: "",
     coverImage: "",
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleDataChange = (name) => (e) => {
     setData((prev) => ({
@@ -35,10 +39,22 @@ export default function Signup() {
     }));
   };
 
-  const onSubmit = (data) => {
-    console.log(data)
-    console.log("profileimage:",file.profileImage)
-    console.log("coverimage:",file.coverImage)
+  const onSubmit = async () => {
+
+    const formData = new FormData();
+    formData.append("fullName", data.fullName);
+    formData.append("username", data.userName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("profileImage", file.profileImage);
+    formData.append("coverImage", file.coverImage);
+    try {
+      const response = await dispatch(registers(formData));
+      console.log("infromation from backend:", response);
+      navigate("/login");
+    } catch (error) {
+      console.error("something went wrong while registering...", error);
+    }
   };
 
   return (
@@ -82,7 +98,7 @@ export default function Signup() {
                 UserName
               </label>
               <input
-               // value={data.userName}
+                // value={data.userName}
                 onChange={handleDataChange("UserName")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your username"
@@ -102,7 +118,7 @@ export default function Signup() {
               <label className="text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
-               // value={data.email}
+                // value={data.email}
                 onChange={handleDataChange("email")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your email"
@@ -130,7 +146,7 @@ export default function Signup() {
               </label>
               <input
                 type="password"
-              //  value={data.password}
+                //  value={data.password}
                 onChange={handleDataChange("password")}
                 className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"

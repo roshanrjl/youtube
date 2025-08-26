@@ -3,7 +3,7 @@ import { Localstorage } from "../utils/index";
 import { registerUser, loginUser, logoutUser } from "../api/userApi/userapi";
 
 //Register async thuck
-export const register = createAsyncThunk(
+export const registers = createAsyncThunk(
   "auth/register",
   async (credentials, thunkAPI) => {
     try {
@@ -23,8 +23,8 @@ export const login = createAsyncThunk(
     try {
       await loginUser(credentials);
       const { accessToken, user } = res.data;
-      LocalStorage.set("accessToken", accessToken);
-      LocalStorage.set("user", user);
+      Localstorage.set("accessToken", accessToken);
+      Localstorage.set("user", user);
       return { accessToken, user };
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -40,7 +40,7 @@ export const logout = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       await logoutUser();
-      LocalStorage.clear();
+      Localstorage.clear();
       return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -80,16 +80,16 @@ const authSlice = createSlice({
       });
     //for register case
     builder
-      .addCase(register.pending, (state, action) => {
+      .addCase(registers.pending, (state, action) => {
         state.isloading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(registers.fulfilled, (state, action) => {
         state.isloading = false;
         state.error = null;
         state.registered = true;
       })
-      .addCase(register.rejected, (state, action) => {
+      .addCase(registers.rejected, (state, action) => {
         state.isloading = false;
         state.error = action.payload;
       });
