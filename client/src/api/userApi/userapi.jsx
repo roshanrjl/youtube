@@ -24,9 +24,11 @@ export const registerUser =(formData)=>{
   return apiClient.post('users/register',formData)
 }
 
-export const loginUser =()=>{
-  return apiClient.post("users/login")
-}
+export const loginUser =(data)=>{
+  return apiClient.post('users/login',data,{
+    withCredentials:true
+  });
+};
 
 export const logoutUser =()=>{
   return apiClient.post("users/logout")

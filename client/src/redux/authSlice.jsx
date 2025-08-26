@@ -21,7 +21,8 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials, thunkAPI) => {
     try {
-      await loginUser(credentials);
+      const res= await loginUser(credentials);
+      console.log("response from backend:",res)
       const { accessToken, user } = res.data;
       Localstorage.set("accessToken", accessToken);
       Localstorage.set("user", user);
