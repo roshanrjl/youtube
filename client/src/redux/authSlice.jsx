@@ -22,8 +22,8 @@ export const login = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const res= await loginUser(credentials);
-      console.log("response from backend:",res)
-      const { accessToken, user } = res.data;
+      console.log("response from backend:",res.data.data)
+      const { accessToken, user } = res.data.data;
       Localstorage.set("accessToken", accessToken);
       Localstorage.set("user", user);
       return { accessToken, user };
@@ -77,7 +77,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.isloading = false;
-        state.error = action.payload.error;
+        state.error = action.payload;
       });
     //for register case
     builder
@@ -98,6 +98,7 @@ const authSlice = createSlice({
     builder
       .addCase(logout.fulfilled, (state, action) => {
         state.user = null;
+        state.isloading=false;
         state.accessToken = null;
       })
       .addCase(logout.pending, (state) => {

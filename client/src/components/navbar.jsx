@@ -1,11 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {Button} from  "./components/ui/button"
+import {logout}from "../redux/authSlice"
 
 function Menubar() {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch()
+  const handleLogout=()=>{
+   dispatch(logout())
+  }
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-2 shadow bg-blue-400 dark:bg-gray-900">
       <div className="flex items-center gap-4">
-        <div className="text-xl font-bold text-white dark:text-gray-100">MyTube</div>
+        <div className="text-xl font-bold text-white dark:text-gray-100">
+          MyTube
+        </div>
       </div>
 
       <div className="flex-1 mx-6 max-w-xl">
@@ -19,8 +30,7 @@ function Menubar() {
       <div className="flex items-center gap-4 text-xl text-white dark:text-gray-100 cursor-pointer">
         <Link to="upload">Upload</Link>
         <Link to="notification">🔔</Link>
-        <Link to="login">Login</Link>
-       
+        {user ? <Button onClick={handleLogout}>Logout</Button>  : <Link to="login">Login</Link>}
       </div>
     </header>
   );

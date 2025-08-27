@@ -1,4 +1,7 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -8,6 +11,8 @@ import { useOutletContext } from "react-router-dom";
 
 function Mycard() {
   const { isSidebarOpen } = useOutletContext();
+  const {user}= useSelector((state)=>state.auth)
+  console.log("the current user is:",user)
 
   return (
     <div className="flex flex-wrap gap-x-10 gap-y-8 p-4">
