@@ -8,15 +8,30 @@ import {
   CardFooter,
 } from "./components/ui/card";
 import { useOutletContext } from "react-router-dom";
+import {getAllVideos} from "../api/videosapi/videoapi"
+import { useNavigate } from "react-router-dom";
 
 function Mycard() {
   const { isSidebarOpen } = useOutletContext();
+  const navigate = useNavigate()
   const {user}= useSelector((state)=>state.auth)
-  console.log("the current user is:",user)
+//  console.log("the current user is:",user)
+const [ videos , setVideos]= useState([])
+
+ const handleVideo= async()=>{
+ const responese= await getAllVideos()
+ console.log("The video that came from backend is:",responese.data.data)
+ setVideos(responese.data.data.videos)
+ }
+
+  useEffect (()=>{
+    handleVideo()
+  },[user,navigate])
+
 
   return (
     <div className="flex flex-wrap gap-x-10 gap-y-8 p-4">
-      {[...Array(12)].map((_, index) => (
+      {videos.map((video, index) => (
         <Card
           key={index}
           className={`
@@ -30,10 +45,14 @@ function Mycard() {
         >
           <CardContent className="text-sm p-4">
             <p>
-              Video content from backend. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Ullam maiores quibusdam.
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consectetur molestiae et necessitatibus. Alias nesciunt ab illum explicabo voluptatum eum totam molestias accusamus, facilis necessitatibus rem illo quibusdam iste, cum placeat, magni earum quasi quo harum. Ipsa, vel quaerat illo ipsam placeat corrupti! Illo modi tempore dolore, aliquid necessitatibus consequuntur excepturi!
-            </p>
+              <video
+               src={video.videoFile }
+                controls
+              className="w-full h-40 object-cover mt-2 rounded-lg"
+               />
+             {video.title}
+             <p className="text-gray-500 text-xs mt-1">{video.description}</p>
+            </p>  
           </CardContent>
           <CardFooter className="text-xs px-4 pb-4 pt-0">
             Profile and video name from backend
