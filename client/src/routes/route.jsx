@@ -3,6 +3,8 @@ import Layout from "../layout";
 import Home from "../pages/home";
 import Login from "../components/login"
 import Signup from "../components/signup"
+import Video from "../pages/video"
+import History from "../pages/history"
 
 
 const router = createBrowserRouter([
@@ -22,6 +24,16 @@ const router = createBrowserRouter([
       {
         path:"signup",
         element:<Signup/>
+      }
+      ,
+      {
+        path:"video",
+        element:<Video/>
+      }
+      ,
+      {
+        path:"inbox",
+        element:<History/>
       }
     ],
   },
