@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 import {
   Card,
   CardAction,
@@ -9,20 +9,31 @@ import {
   CardTitle,
 } from "./components/ui/card";
 
-function Mycard({ cardClassName = "", headerClassName = "", ...props }) {
+function Mycard(
+          {
+            title="playlist",
+            description="",
+            footer="",
+            content="",
+            className="",
+            cardClassName = "",
+            headerClassName = "",
+            ...props
+          }) 
+          {
   return (
-    <div className="flex  min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
+    <div className={ ` min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-500 ${className}`}>
       <Card className={`${cardClassName}`}>
         <CardHeader className={`${headerClassName}`}>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-          <CardAction>Card Action</CardAction>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        
         </CardHeader>
         <CardContent>
-          <p>Card Content</p>
+          {content}
         </CardContent>
         <CardFooter>
-          <p>Card Footer</p>
+          {footer}
         </CardFooter>
       </Card>
     </div>
