@@ -5,6 +5,8 @@ import Login from "../components/login"
 import Signup from "../components/signup"
 import Video from "../pages/video"
 import History from "../pages/history"
+import UploadVideo from "../components/uploadVideo";
+import CreatePost from "../components/createPost";
 
 
 const router = createBrowserRouter([
@@ -34,6 +36,16 @@ const router = createBrowserRouter([
       {
         path:"inbox",
         element:<History/>
+      }
+      ,
+      {
+        path:"upload-video",
+        element:<UploadVideo/>
+      }
+      ,
+      {
+        path:"create-post",
+        element:<CreatePost/>
       }
     ],
   },
