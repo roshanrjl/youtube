@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button } from "./components/ui/button";
 import { logout } from "../redux/authSlice";
 import { useNavigate } from "react-router-dom";
+import { showForm } from "../redux/formSlice";
 
 // ShadCN UI dropdown menu imports
 import {
@@ -16,10 +17,14 @@ function Menubar() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [showForm, setShowForm] = useState(true);
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleUpload = () => {
+    dispatch(showForm());
+    navigate("/upload-video")
   };
 
   return (
@@ -45,23 +50,11 @@ function Menubar() {
         {/* Upload Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              onClick={() => {
-                setShowForm(true);
-              }}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              Upload
-            </Button>
+            <Button className="bg-blue-600 hover:bg-blue-700">Upload</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg shadow-md">
             <DropdownMenuItem>
-              <button
-                onClick={() => {
-                  navigate("/upload-video");
-                }}
-                className="w-full text-left"
-              >
+              <button onClick={handleUpload} className="w-full text-left">
                 Upload Video
               </button>
             </DropdownMenuItem>

@@ -24,8 +24,8 @@ export const getAllVideos = () => {
   return apiClient.get("video/");
 };
 
-export const publishAVideo = () => {
-  return apiClient.post("video/");
+export const publishAVideo = (formdata) => {
+  return apiClient.post("video/",formdata);
 };
 
 export const getVideoById = (videoId) => {
