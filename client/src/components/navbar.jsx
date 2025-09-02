@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "./components/ui/button";
 import { logout } from "../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 // ShadCN UI dropdown menu imports
 import {
@@ -15,6 +15,8 @@ import {
 function Menubar() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [showForm, setShowForm] = useState(true);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -43,35 +45,53 @@ function Menubar() {
         {/* Upload Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">Upload</Button>
+            <Button
+              onClick={() => {
+                setShowForm(true);
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Upload
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg shadow-md">
             <DropdownMenuItem>
-              <Link to="/upload-video" className="w-full block">
+              <button
+                onClick={() => {
+                  navigate("/upload-video");
+                }}
+                className="w-full text-left"
+              >
                 Upload Video
-              </Link>
+              </button>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link to="/go-live" className="w-full block">
+              <button
+                onClick={() => navigate("/go-live")}
+                className="w-full text-left"
+              >
                 Go Live
-              </Link>
+              </button>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link to="/create-post" className="w-full block">
+              <button
+                onClick={() => navigate("/create-post")}
+                className="w-full text-left"
+              >
                 Create Post
-              </Link>
+              </button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         {/* Notification */}
-        <Link to="notification">🔔</Link>
+        <Button onClick={() => navigate("/notification")}>🔔</Button>
 
         {/* Login / Logout */}
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>
         ) : (
-          <Link to="login">Login</Link>
+          <Button onClick={() => navigate("/login")}>Login</Button>
         )}
       </div>
     </header>
