@@ -1,58 +1,85 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardFooter } from "../components/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+} from "../components/components/ui/card";
 import { useOutletContext } from "react-router-dom";
 import { getAllVideos } from "../api/videosapi/videoapi";
-import { useNavigate } from "react-router-dom";
 
 function Home() {
   const { isSidebarOpen } = useOutletContext();
-  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  //  console.log("the current user is:",user)
   const [videos, setVideos] = useState([]);
 
   const handleVideo = async () => {
-    const responese = await getAllVideos();
-    console.log("The video that came from backend is:", responese.data.data);
-    setVideos(responese.data.data.videos);
+    try {
+      const response = await getAllVideos();
+      setVideos(response.data.data.videos);
+
+    } catch (err) {
+      console.error("Error fetching videos:", err);
+    }
   };
+  console.log("response from backend:",videos)
 
   useEffect(() => {
     handleVideo();
-  }, [user, navigate]);
+  }, [user]);
 
   return (
-    <div className="flex flex-wrap gap-x-10 gap-y-8 p-4">
+    <div className="pt-8 flex flex-wrap gap-6 ">
       {videos.map((video, index) => (
         <Card
           key={index}
-          className={`
+            className={`
             
-            aspect-square
-            basis-[calc(30%-1rem)]
+            
+            basis-full sm:basis-[48%] md:basis-[32%]
             overflow-hidden
             transition-transform duration-300
             hover:shadow-lg
             ${isSidebarOpen ? "scale-100" : "scale-105"}
           `}
         >
-          <CardContent className="text-sm p-4">
-            <p>
-              {/* <video
-               src={video.videoFile }
-                controls
-              className="w-full h-60 object-cover -mt-5 -mf-5  rounded-lg"
-               /> */}
-              <Link to="/video">
-                <img src={video.thumbnail} alt="" />
-              </Link>
-            </p>
+          {/* Card content: 80% height */}
+          <CardContent className="flex-[4]">
+            
+            <Link to={`/video/${video._id}`} className="block h-full">
+              <img
+                src={video.thumbnail}
+                alt={video.title}
+                className="w-full h-full  rounded-t-2xl"
+              />
+            </Link>
           </CardContent>
-          <CardFooter className="text-xs px-4 pb-4 pt-0">
-            {video.title}
+
+          {/* Card footer: 20% height */}
+          <CardFooter className="flex   gap-2 -mt-4 ">
+            {/* Top row: logo + title */}
+            <div className="flex items-start gap-3">
+              <img
+                src={video.channelLogo || "https://dummyimage.com/40x40/000/fff"}
+                alt={video.owner}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <span className="text-sm font-bold text-gray-800 dark:text-gray-200 line-clamp-2">
+                {video.title}
+               
+              </span>
+            </div>
+
+            <div className="text-x   text-gray-500 dark:text-gray-400">
+              
+            </div>
+              
+            {/* Bottom row: views + upload date */}
+            <div className="text-x   text-gray-500 dark:text-gray-400">
+              {video.views} views •{" "}
+              {new Date(video.createdAt).toLocaleDateString()}
+            </div>
           </CardFooter>
         </Card>
       ))}
