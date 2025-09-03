@@ -10,7 +10,7 @@ export const publishAVideo = (formdata) => {
 };
 
 export const getVideoById = (videoId) => {
-  return apiClient.post(`video/${videoId}`);
+  return apiClient.get(`video/${videoId}`);
 };
 
 export const updateVideo = (videoId) => {

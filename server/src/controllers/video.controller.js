@@ -126,14 +126,12 @@ const getVideoById = asyncHandler(async (req, res) => {
   }
 
   const getvideo = await Video.findById(videoId);
+  console.log("video is:",getvideo)
 
   if (!getvideo) {
     throw new ApiError(400, "could get the video");
   }
 
-  if (getvideo.owner.toString() !== user.toString()) {
-    throw new ApiError(403, "invalid user cannot access the video");
-  }
   return res
     .status(200)
     .json(new ApiResponse(200, getvideo, "video by id fetched successfully"));

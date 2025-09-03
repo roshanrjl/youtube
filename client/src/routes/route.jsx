@@ -7,6 +7,7 @@ import Video from "../pages/video"
 import History from "../pages/history"
 import UploadVideo from "../components/uploadVideo";
 import CreatePost from "../components/createPost";
+import Profile from "../pages/profile";
 
 
 const router = createBrowserRouter([
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       }
       ,
       {
-        path:"video",
+        path:"video/:id",
         element:<Video/>
       }
       ,
@@ -46,6 +47,11 @@ const router = createBrowserRouter([
       {
         path:"create-post",
         element:<CreatePost/>
+      }
+      ,
+      {
+        path:"profile/:id",
+        element:<Profile/>
       }
     ],
   },

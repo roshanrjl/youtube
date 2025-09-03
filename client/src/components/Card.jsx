@@ -11,7 +11,7 @@ import {
 
 function Mycard(
           {
-            title="playlist",
+            title="",
             description="",
             footer="",
             content="",
