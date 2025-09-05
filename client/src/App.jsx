@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { refreshTokenOnLoad } from "./redux/authSlice";
 import Navbar from "./components/Navbar";
 import { Outlet } from "react-router-dom";
+import { ThemeProvider } from "./components/Themeprovide";
 
 function App() {
   const dispatch = useDispatch();
@@ -16,8 +17,10 @@ function App() {
 
   return (
     <>
-      <Navbar user={user} />
-      <Outlet />
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Navbar user={user} />
+        <Outlet />
+      </ThemeProvider>
     </>
   );
 }

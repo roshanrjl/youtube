@@ -26,8 +26,11 @@ export const login = createAsyncThunk(
     try {
       const res = await loginUser(credentials);
       const { accessToken, user } = res.data.data;
+
+      // Store only accessToken + user (refreshToken is in httpOnly cookie)
       Localstorage.set("accessToken", accessToken);
       Localstorage.set("user", user);
+
       return { accessToken, user };
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -43,8 +46,11 @@ export const logout = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       await logoutUser();
+
+      // Clear local storage
       Localstorage.remove("accessToken");
       Localstorage.remove("user");
+
       return true;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -54,7 +60,7 @@ export const logout = createAsyncThunk(
   }
 );
 
-// Refresh token on app load
+// Refresh token on app load (cookie is sent automatically with withCredentials)
 export const refreshTokenOnLoad = createAsyncThunk(
   "auth/refreshTokenOnLoad",
   async (_, thunkAPI) => {
@@ -62,9 +68,11 @@ export const refreshTokenOnLoad = createAsyncThunk(
     if (!user) return thunkAPI.rejectWithValue("No user found");
 
     try {
-      const res = await refreshAccessToken();
-      const newAccessToken = res.data.accessToken;
+      const res = await refreshAccessToken(); // backend sets new cookies
+      const newAccessToken = res.data.data.accessToken;
+
       Localstorage.set("accessToken", newAccessToken);
+
       return { user, accessToken: newAccessToken };
     } catch (err) {
       Localstorage.remove("user");

@@ -4,6 +4,7 @@ import { Button } from "./components/ui/button";
 import { logout } from "../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import { showForm } from "../redux/formSlice";
+import  {ModeToggle} from "./ToggleMode"
 
 // ShadCN UI dropdown menu imports
 import {
@@ -43,6 +44,10 @@ function Menubar() {
           placeholder="Search"
           className="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
         />
+      </div>
+      <div>
+          <label htmlFor="">mode</label>
+          <ModeToggle/>
       </div>
 
       {/* Right Side Menu */}

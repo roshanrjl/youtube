@@ -8,6 +8,7 @@ import History from "../pages/history"
 import UploadVideo from "../components/uploadVideo";
 import CreatePost from "../components/createPost";
 import Profile from "../pages/profile";
+import Changepassword from "../pages/passwordpages/Changepassword"
 
 
 const router = createBrowserRouter([
@@ -52,6 +53,11 @@ const router = createBrowserRouter([
       {
         path:"profile/:id",
         element:<Profile/>
+      }
+      ,
+      {
+        path:"/settings/change-password",
+        element:<Changepassword/>
       }
     ],
   },

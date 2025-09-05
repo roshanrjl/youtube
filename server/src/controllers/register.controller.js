@@ -27,9 +27,12 @@ const generateAccessAndRefereshTokens = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, username, password } = req.body;
 
-   if(!fullName || !email ||!username || !password){
-  throw new ApiError(401,"some value are missing among fullName, email, username, password")
- }
+  if (!fullName || !email || !username || !password) {
+    throw new ApiError(
+      401,
+      "some value are missing among fullName, email, username, password"
+    );
+  }
 
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
@@ -118,7 +121,7 @@ const OAuthCallback = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-  console.log("data from frontend:",req.body)
+  console.log("data from frontend:", req.body);
 
   if (!username && !email) {
     throw new ApiError(400, "username or email is required");
@@ -154,7 +157,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: false, // true always, even on localhost, because SameSite=None requires it
+    sameSite: "lax",
+    path: "/",
   };
 
   return res
@@ -200,14 +205,19 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+  console.log("incoming token from fronted:", incomingRefreshToken);
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized request");
   }
 
   try {
-    const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
 
     const user = await User.findById(decodedToken?._id);
 
@@ -221,12 +231,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: false, 
+      secure: false, // true always, even on localhost, because SameSite=None requires it
+      sameSite: "lax",
+      path: "/",
     };
 
-    
-    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
-   
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+      user._id
+    );
 
     return res
       .status(200)
@@ -243,7 +255,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, error?.message || "Invalid refresh token");
   }
 });
-
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
