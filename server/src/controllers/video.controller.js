@@ -10,14 +10,14 @@ import { getVideoDurationInSeconds } from "get-video-duration";
 //controller for getall videos
 const getAllVideos = asyncHandler(async (req, res) => {
   let { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
-
+  console.log("checking ...");
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
-
   const skip = (page - 1) * limit;
-  const sortDireciton = sortType === "desc" ? -1 : 1;
+  const sortDirection = sortType === "desc" ? -1 : 1;
 
   const result = await Video.aggregate([
+    // 1️⃣ Filter videos
     {
       $match: {
         ...(query && {
@@ -27,22 +27,52 @@ const getAllVideos = asyncHandler(async (req, res) => {
           ],
         }),
         ...(userId && {
-          user: new mongoose.Types.ObjectId(userId),
+          owner: new mongoose.Types.ObjectId(userId),
         }),
       },
     },
+    // 2️ Join with User collection to get owner info
     {
-      $sort: {
-        [sortBy]: sortType === "desc" ? -1 : 1,
+      $lookup: {
+        from: "users", // collection name in MongoDB (usually lowercase + plural)
+        localField: "owner", // field in Video that stores userId
+        foreignField: "_id", // field in User collection
+        as: "owner",
       },
     },
+    // 3️ Unwind the owner array to get a single object
+    { $unwind: "$owner" },
+
+    // 4️ Sort videos
+    {
+      $sort: {
+        [sortBy]: sortDirection,
+      },
+    },
+
+    //Pagination and total count
     {
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{ $skip: skip }, { $limit: limit }],
+        data: [
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $project: {
+              title: 1,
+              description: 1,
+              createdAt: 1,
+              videoFile: 1,
+              thumbnail: 1,
+              username: "$owner.username",
+              avatar: "$owner.avatar",
+            },
+          },
+        ],
       },
     },
   ]);
+
   const videos = result[0].data;
   const total = result[0].metadata[0]?.total || 0;
 
@@ -52,10 +82,11 @@ const getAllVideos = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { total, page, limit, videos },
-        "All video fetched successfully"
+        "All videos fetched successfully"
       )
     );
 });
+
 //controller for publishing video
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
@@ -66,7 +97,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
       .json({ success: false, message: "No video file uploaded" });
   }
   const thumbnailpath = req.files.thumbnail?.[0].path;
- 
 
   if (!thumbnailpath) {
     throw new ApiError(400, "couldnot found the thumbnail");
@@ -81,7 +111,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
   }
   const videopath = req.files.video?.[0].path;
 
-
   if (!videopath) {
     throw new ApiError(400, "videopath didn't found");
   }
@@ -94,7 +123,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     duration = 0; // fallback if needed
   }
   const coudinaryresult = await uploadOnCloudinary(videopath);
-  console.log("checking response from cloudinary for video:",coudinaryresult)
+  console.log("checking response from cloudinary for video:", coudinaryresult);
 
   if (!coudinaryresult.url) {
     throw new ApiError(400, "couldn't found the video url from cloudinary");
@@ -115,7 +144,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 //controller for getting video by id
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  console.log("checking the videoId:",videoId)
+  console.log("checking the videoId:", videoId);
   const user = req.user._id;
   if (!videoId) {
     throw new ApiError(400, "didn't get video id");
@@ -126,7 +155,6 @@ const getVideoById = asyncHandler(async (req, res) => {
   }
 
   const getvideo = await Video.findById(videoId);
-  console.log("video is:",getvideo)
 
   if (!getvideo) {
     throw new ApiError(400, "could get the video");

@@ -23,7 +23,7 @@ const items = [
 const settingsSubItems = [
   { title: "Theme", url: "/settings/theme" },
   { title: "Change Password", url: "/settings/change-password" },
-  { title: "Billing & Payment", url: "/settings/billing" },
+  { title: "MyTube Premium", url: "/settings/premium" },
   { title: "Account", url: "/settings/account" },
 ];
 

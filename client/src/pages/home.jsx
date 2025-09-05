@@ -22,6 +22,7 @@ function Home() {
       console.error("Error fetching videos:", err);
     }
   };
+  console.log("response from backend:",videos)
   
 
   useEffect(() => {
@@ -62,9 +63,9 @@ function Home() {
               <Link to={`/profile/${video.owner}`}>
                 <img
                   src={
-                    video.channelLogo || "https://dummyimage.com/40x40/000/fff"
+                    video.avatar
                   }
-                  alt={video.owner}
+                  alt={video.username}
                   className="w-10 h-10 rounded-full object-cover"
                 />
               </Link>

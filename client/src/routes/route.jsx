@@ -9,7 +9,8 @@ import UploadVideo from "../components/uploadVideo";
 import CreatePost from "../components/createPost";
 import Profile from "../pages/profile";
 import Changepassword from "../pages/passwordpages/Changepassword"
-
+import Account from "../pages/account"
+import Premium from "../pages/Premium"
 
 const router = createBrowserRouter([
   {
@@ -58,6 +59,16 @@ const router = createBrowserRouter([
       {
         path:"/settings/change-password",
         element:<Changepassword/>
+      }
+      ,
+      {
+        path:"/settings/account",
+        element:<Account/>
+      }
+      ,
+      {
+        path:"/settings/premium",
+        element:<Premium/>
       }
     ],
   },

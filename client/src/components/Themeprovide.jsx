@@ -9,23 +9,34 @@ const initialState = {
 // Create context
 const ThemeProviderContext = createContext(initialState);
 
-// ThemeProvider component
-export function ThemeProvider({ children, defaultTheme = "system", storageKey = "vite-ui-theme", ...props }) {
+export function ThemeProvider({
+  children,
+  defaultTheme = "system",
+  storageKey = "vite-ui-theme",
+  ...props
+}) {
+  // Initialize theme from localStorage or default
   const [theme, setThemeState] = useState(() => {
     return localStorage.getItem(storageKey) || defaultTheme;
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      root.classList.add(systemTheme);
-      return;
-    }
+    const applyTheme = (themeValue) => {
+      root.classList.remove("light", "dark");
 
-    root.classList.add(theme);
+      if (themeValue === "system") {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+        root.classList.add(systemTheme);
+      } else {
+        root.classList.add(themeValue);
+      }
+    };
+
+    applyTheme(theme);
   }, [theme]);
 
   const setTheme = (newTheme) => {
@@ -50,7 +61,3 @@ export const useTheme = () => {
   }
   return context;
 };
-
-
-
-
