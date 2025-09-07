@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Home, Inbox, Search, Settings, ChevronDown, ChevronRight } from "lucide-react";
+import {  Home, ThumbsUp , Video ,Search, Settings, ChevronDown, ChevronRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import {
@@ -15,8 +15,8 @@ import {
 
 const items = [
   { title: "Home", url: "/", icon: Home },
-  { title: "Inbox", url: "/inbox", icon: Inbox },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
+  { title: "Your Videos", url: "/yourVideo", icon: Video },
+  { title: "Liked Videos", url: "/calendar", icon: ThumbsUp  },
   { title: "Search", url: "/search", icon: Search },
 ];
 

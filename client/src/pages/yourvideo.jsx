@@ -1,9 +1,13 @@
 import React from 'react'
 
-function yourvideo() {
+function Yourvideo() {
   return (
-    <div>yourvideo</div>
+    <div>
+      <p className='text-2xl text-red-500 mt-6 flex justify-center'>
+        Work in progress
+      </p>
+    </div>
   )
 }
 
-export default yourvideo
+export default Yourvideo
