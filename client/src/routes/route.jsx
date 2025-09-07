@@ -4,13 +4,14 @@ import Home from "../pages/home";
 import Login from "../components/login"
 import Signup from "../components/signup"
 import Video from "../pages/video"
-import Yourvideo from "../pages/yourvideo";
+import Yourvideo from "../pages/Dashboard";
 import UploadVideo from "../components/uploadVideo";
 import CreatePost from "../components/createPost";
 import Profile from "../pages/profile";
 import Changepassword from "../pages/passwordpages/Changepassword"
 import Account from "../pages/account"
 import Premium from "../pages/Premium"
+import LikedVideo from "../pages/likedVideo";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,11 @@ const router = createBrowserRouter([
       {
         path:"/settings/premium",
         element:<Premium/>
+      }
+      ,
+      {
+        path:"/likeVideo",
+        element:<LikedVideo/>
       }
     ],
   },
