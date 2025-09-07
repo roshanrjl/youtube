@@ -27,6 +27,7 @@ function Home() {
 
   useEffect(() => {
     handleVideo();
+      sessionStorage.removeItem("lastViewedVideo");
   }, [user]);
 
   return (
@@ -46,7 +47,9 @@ function Home() {
         >
           {/* Card content: 80% height */}
           <CardContent className="flex-[4]">
-            <Link to={`/video/${video._id}`} className="block h-full">
+            <Link to={`/video/${video._id}`} 
+               state={{ fromHome: true }}
+            className="block h-full">
               <img
                 src={video.thumbnail}
                 alt={video.title}

@@ -5,14 +5,51 @@ import {
   CardFooter,
 } from "../components/components/ui/card";
 import Mycard from "../components/Card";
-import { Link, useParams } from "react-router-dom";
-import { getVideoById, getAllVideos } from "../api/videosapi/videoapi";
+import { Link, useParams , useLocation } from "react-router-dom";
+import {
+  getVideoById,
+  getAllVideos,
+  addViews,
+} from "../api/videosapi/videoapi";
 
 function Video() {
   const { id } = useParams();
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [allvideo, setAllVideo] = useState(null);
+  const [views, setViews] = useState();
+    const location = useLocation();
+  const fromHome = location.state?.fromHome || false;
+
+
+ useEffect(() => {
+  const lastViewedVideo = sessionStorage.getItem("lastViewedVideo");
+
+  const incrementViews = async () => {
+    try {
+      
+      if (lastViewedVideo !== id) {
+        const response = await addViews(id);
+        setViews(response.data.data); 
+        sessionStorage.setItem("lastViewedVideo", id); 
+      } else {
+        
+        const response = await getVideoById(id);
+        setViews(response.data.data.views);
+      }
+    } catch (error) {
+      console.error("Error handling views:", error);
+    }
+  };
+
+  incrementViews();
+}, [id]);
+
+
+
+
+
+  console.log("views from backend is:", views);
 
   // Fetch video by ID
   const fetchVideo = async () => {
@@ -122,13 +159,12 @@ function Video() {
         {allvideo?.map((video) =>
           video._id !== id ? (
             <Link to={`/video/${video._id}`}>
-            <img
-              key={video._id}
-              src={video.thumbnail}
-              alt={video.title}
-              className="w-60 h-40 rounded-xl cursor-pointer hover:scale-105 transition-transform"
-            />
-            
+              <img
+                key={video._id}
+                src={video.thumbnail}
+                alt={video.title}
+                className="w-60 h-40 rounded-xl cursor-pointer hover:scale-105 transition-transform"
+              />
             </Link>
           ) : null
         )}

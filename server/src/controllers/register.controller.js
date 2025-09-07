@@ -159,7 +159,6 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: false, // true always, even on localhost, because SameSite=None requires it
     sameSite: "lax",
-    path: "/",
   };
 
   return res

@@ -10,7 +10,7 @@ import { getVideoDurationInSeconds } from "get-video-duration";
 //controller for getall videos
 const getAllVideos = asyncHandler(async (req, res) => {
   let { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
-  console.log("checking ...");
+
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const skip = (page - 1) * limit;
@@ -144,7 +144,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 //controller for getting video by id
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  console.log("checking the videoId:", videoId);
+
   const user = req.user._id;
   if (!videoId) {
     throw new ApiError(400, "didn't get video id");
@@ -272,6 +272,26 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     );
 });
 
+const addViews = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+  // console.log("checking from addViews controller:",videoId)
+  if (!videoId) {
+    throw new ApiError(400, "videoId is required");
+  }
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new ApiError(400, "video not found");
+  }
+
+  video.views += 1;
+  await video.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video.views, "views added successfully"));
+});
+
 export {
   getAllVideos,
   publishAVideo,
@@ -279,4 +299,5 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  addViews,
 };

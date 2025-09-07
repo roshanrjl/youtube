@@ -24,3 +24,7 @@ export const deleteVideo = () => {
 export const togglePublishStatus = (videoId) => {
   return apiClient.get(`video/${videoId}`);
 };
+
+export const addViews = (videoId)=>{
+  return apiClient.post(`video/increment-views/${videoId}`)
+}
