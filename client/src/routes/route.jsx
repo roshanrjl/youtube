@@ -1,16 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout";
 import Home from "../pages/home";
-import Login from "../components/login"
-import Signup from "../components/signup"
-import Video from "../pages/video"
-import Yourvideo from "../pages/Dashboard";
+import Login from "../components/login";
+import Signup from "../components/signup";
+import Video from "../pages/video";
+import Yourvideo from "../pages/dashboad/Dashboard";
 import UploadVideo from "../components/uploadVideo";
 import CreatePost from "../components/createPost";
 import Profile from "../pages/profile";
-import Changepassword from "../pages/passwordpages/Changepassword"
-import Account from "../pages/account"
-import Premium from "../pages/Premium"
+import Changepassword from "../pages/passwordpages/Changepassword";
+import Account from "../pages/account";
+import Premium from "../pages/Premium";
 import LikedVideo from "../pages/likedVideo";
 
 const router = createBrowserRouter([
@@ -19,63 +19,53 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path:"",
+        path: "",
         element: <Home />,
       },
       {
-        path:"login",
-        element:<Login/>
-
+        path: "login",
+        element: <Login />,
       },
       {
-        path:"signup",
-        element:<Signup/>
-      }
-      ,
+        path: "signup",
+        element: <Signup />,
+      },
       {
-        path:"video/:id",
-        element:<Video/>
-      }
-      ,
+        path: "video/:id",
+        element: <Video />,
+      },
       {
-        path:"yourVideo",
-        element:<Yourvideo/>
-      }
-      ,
+        path: "yourVideo",
+        element: <Yourvideo />,
+      },
       {
-        path:"upload-video",
-        element:<UploadVideo/>
-      }
-      ,
+        path: "upload-video",
+        element: <UploadVideo />,
+      },
       {
-        path:"create-post",
-        element:<CreatePost/>
-      }
-      ,
+        path: "create-post",
+        element: <CreatePost />,
+      },
       {
-        path:"profile/:id",
-        element:<Profile/>
-      }
-      ,
+        path: "profile/:id",
+        element: <Profile />,
+      },
       {
-        path:"/settings/change-password",
-        element:<Changepassword/>
-      }
-      ,
+        path: "/settings/change-password",
+        element: <Changepassword />,
+      },
       {
-        path:"/settings/account",
-        element:<Account/>
-      }
-      ,
+        path: "/settings/account",
+        element: <Account />,
+      },
       {
-        path:"/settings/premium",
-        element:<Premium/>
-      }
-      ,
+        path: "/settings/premium",
+        element: <Premium />,
+      },
       {
-        path:"/likeVideo",
-        element:<LikedVideo/>
-      }
+        path: "/likeVideo",
+        element: <LikedVideo />,
+      },
     ],
   },
 ]);

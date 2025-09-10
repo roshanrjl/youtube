@@ -17,8 +17,8 @@ export const updateVideo = (videoId) => {
   return apiClient.patch(`video/${videoId}`);
 };
 
-export const deleteVideo = () => {
-  return apiClient.delete();
+export const deleteVideo = (videoId) => {
+  return apiClient.delete(`video/${videoId}`);
 };
 
 export const togglePublishStatus = (videoId) => {
@@ -27,4 +27,7 @@ export const togglePublishStatus = (videoId) => {
 
 export const addViews = (videoId)=>{
   return apiClient.post(`video/increment-views/${videoId}`)
-}
+};
+export const yourvideos = ()=>{
+  return apiClient.get("video/yourVideo")
+};

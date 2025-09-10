@@ -164,6 +164,59 @@ const getVideoById = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, getvideo, "video by id fetched successfully"));
 });
+//controller for getting your video (i.e the video you have upload)
+const yourVideos = asyncHandler(async (req, res) => {
+  const owner = req.user._id;
+  console.log("checking if controlled reached or not")
+
+  if (!owner) {
+    throw new ApiError(400, "Did not receive owner id");
+  }
+
+  const videoowner = await User.findById(owner);
+  if (!videoowner) {
+    throw new ApiError(400, "Could not find the owner matching with the provided id");
+  }
+
+  const result = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.user._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "videos", // collection name in MongoDB
+        localField: "_id", // user _id
+        foreignField: "owner", // matches with Video.owner
+        as: "videos", 
+        pipeline: [
+          {
+            $project: {
+              videoFile: 1,
+              thumbnail: 1,
+              title: 1,
+              description: 1,
+              views: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        username: 1,
+        avatar: 1,
+        videos: 1,
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Your videos fetched successfully"));
+});
+
 
 //controller for updating the video
 const updateVideo = asyncHandler(async (req, res) => {
@@ -300,4 +353,5 @@ export {
   deleteVideo,
   togglePublishStatus,
   addViews,
+  yourVideos,
 };

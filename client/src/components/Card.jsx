@@ -1,7 +1,6 @@
 import React, { Children } from "react";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -18,6 +17,7 @@ function Mycard(
             className="",
             cardClassName = "",
             headerClassName = "",
+            contentclass="",
             ...props
           }) 
           {
@@ -26,10 +26,9 @@ function Mycard(
       <Card className={`${cardClassName}`}>
         <CardHeader className={`${headerClassName}`}>
           <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        
+          <CardDescription>{description}</CardDescription>        
         </CardHeader>
-        <CardContent>
+        <CardContent className={`${contentclass}`}>
           {content}
         </CardContent>
         <CardFooter>
