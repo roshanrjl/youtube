@@ -107,7 +107,7 @@ function Dashboard() {
                   >
                     Delete
                   </Button>
-                  <Link to="/update">
+                 <Link to={`/update/${video._id}`}>
                     <Button className="bg-blue-500 text-white hover:bg-blue-600">
                       Update
                     </Button>

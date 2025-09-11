@@ -13,8 +13,8 @@ export const getVideoById = (videoId) => {
   return apiClient.get(`video/${videoId}`);
 };
 
-export const updateVideo = (videoId) => {
-  return apiClient.patch(`video/${videoId}`);
+export const updateVideo = (videoId,formdata) => {
+  return apiClient.patch(`video/${videoId}`,formdata);
 };
 
 export const deleteVideo = (videoId) => {

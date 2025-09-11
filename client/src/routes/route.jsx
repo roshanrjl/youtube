@@ -12,6 +12,7 @@ import Changepassword from "../pages/passwordpages/Changepassword";
 import Account from "../pages/account";
 import Premium from "../pages/Premium";
 import LikedVideo from "../pages/likedVideo";
+import Update from "../pages/dashboad/update";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: "/likeVideo",
         element: <LikedVideo />,
+      },
+      {
+        path: "/update/:id",
+        element: <Update />,
       },
     ],
   },

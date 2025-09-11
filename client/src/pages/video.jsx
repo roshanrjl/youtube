@@ -49,7 +49,7 @@ function Video() {
 
 
 
-  console.log("views from backend is:", views);
+ 
 
   // Fetch video by ID
   const fetchVideo = async () => {
