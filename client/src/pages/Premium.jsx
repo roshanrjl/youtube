@@ -1,14 +1,57 @@
 import React, { useState } from "react";
+import { initiatePayment } from "../api/paymentApi/paymentApi";
+import  { useId } from "react";
 
 function Premium() {
+    const id = useId();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [selectedPlan, setSelectedPlan] = useState("");
+  
+  
+  const handlepayment =async()=>{
+    const payload={
+      amount:selectedPlan,
+      method:paymentMethod,
+      transactionId:id
+    }
+    console.log('checking value:',payload )
+    try{
+      const response =await initiatePayment(payload)
+      console.log("response from backend:",response)
+      if(paymentMethod=="Esewa"){
+        const payload = response.data.payload
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        Object.entries(payload).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = String(value);
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+      }else if
+      (paymentMethod=="Khalti"){
+
+         const khaltiPaymentUrl = response.data.khaltiPaymentUrl;
+        window.location.href = khaltiPaymentUrl;
+      }
+    }catch(error){
+      console.log("something went wrong:"+error)
+    }
+  }
+  
 
   const plans = [
-    { name: "Monthly", price: "Rs 2000" },
-    { name: "3 Months", price: "Rs 5000" },
-    { name: "6 Months", price: "Rs 10000" },
-    { name: "12 Months", price: "Rs 15000" },
+    { name: "Monthly", price:  2000 },
+    { name: "3 Months", price: 5000 },
+    { name: "6 Months", price:  10000 },
+    { name: "12 Months", price:  15000 },
   ];
 
   return (
@@ -39,9 +82,9 @@ function Premium() {
               {plans.map((plan) => (
                 <div
                   key={plan.name}
-                  onClick={() => setSelectedPlan(plan.name)}
+                  onClick={() => setSelectedPlan(plan.price)}
                   className={`p-4 rounded-lg text-center font-semibold cursor-pointer transition
-                    ${selectedPlan === plan.name
+                    ${selectedPlan === plan.price
                       ? "bg-blue-600 text-white"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600"
                     }`}
@@ -80,7 +123,10 @@ function Premium() {
               </label>
             </div>
 
-            <button className="w-full px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+            <button 
+            className="w-full px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            onClick={handlepayment}
+            >
               Process Payment
             </button>
           </div>

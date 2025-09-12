@@ -10,6 +10,7 @@ import playlistRoute from "./routes/playlist.route.js"
 import subscriptionRoute from "./routes/subscription.routes.js"
 import tweetRoute from "./routes/tweet.routes.js"
 import videoRoute from "./routes/video.routes.js"
+import paymentRoute from "./routes/payment.routes.js"
 import "./config/password.config.js";
 import { errorHandler } from "./middlewares/errorHandler.middlewares.js"
 
@@ -46,6 +47,7 @@ app.use("/api/v1/playlist", playlistRoute);
 app.use("/api/v1/tweet", tweetRoute);
 app.use("/api/v1/video", videoRoute);
 app.use("/api/v1/subscription", subscriptionRoute); 
+app.use("/api/v1/payment",paymentRoute)
 
 //route declaration
 app.get("/", (req, res) => {
