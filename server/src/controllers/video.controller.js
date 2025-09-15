@@ -217,7 +217,6 @@ const yourVideos = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, result, "Your videos fetched successfully"));
 });
 
-
 //controller for updating the video
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -344,6 +343,8 @@ const addViews = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, video.views, "views added successfully"));
 });
+
+
 
 export {
   getAllVideos,

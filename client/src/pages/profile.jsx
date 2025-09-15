@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Input } from "@components/ui/input";
+import { useState } from "react";
 
 function Profile() {
+  const[profileImage , setProfileImage] = useState()
+  const[channelname, setChannelName]= useState()
+  
+  const handleDate=()=>{
+    try{
+
+    }catch(error){
+
+    }
+  }
+  useEffect(()=>{
+
+  },[])
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       {/* Cover Image */}
