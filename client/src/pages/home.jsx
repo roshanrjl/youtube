@@ -22,7 +22,7 @@ function Home() {
       console.error("Error fetching videos:", err);
     }
   };
-  console.log("response from backend:",videos)
+  // console.log("response from backend:",videos)
   
 
   useEffect(() => {
@@ -63,7 +63,7 @@ function Home() {
             {/* Top row: logo + title */}
 
             <div className="flex items-start gap-3">
-              <Link to={`/profile/${video.owner}`}>
+              <Link to={`/profile/${video.ownerId}`}>
                 <img
                   src={
                     video.avatar
