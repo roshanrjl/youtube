@@ -11,6 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "./components/ui/card";
+import { googlelogin } from "../api/userApi/userapi";
+import { githublogin } from "../api/userApi/userapi";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -110,10 +112,20 @@ export default function Login() {
         <CardFooter className="flex flex-col items-center space-y-2 text-sm">
           <p className="text-gray-500">Or login with</p>
           <div className="flex space-x-4">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-              Facebook
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+             onClick={async()=>{
+               googlelogin()
+             }}
+            
+            >
+              google
             </button>
-            <button className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900">
+            <button className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
+            
+            onClick={async()=>{
+                window.location.href = "http://localhost:5000/api/v1/users/google";
+             }}
+            >
               GitHub
             </button>
           </div>

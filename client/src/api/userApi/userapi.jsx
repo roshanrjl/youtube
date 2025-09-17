@@ -51,3 +51,11 @@ export const getUserChannelProfile =(username)=>{
 export const getWatchHistory =()=>{
   return apiClient.get("users/history")
 }
+
+export const googlelogin=()=>{
+  return apiClient.get("users/google")
+}
+
+export const githublogin=()=>{
+  return apiClient.get("users/github")
+}
