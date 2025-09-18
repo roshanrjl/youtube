@@ -84,41 +84,49 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const OAuthCallback = asyncHandler(async (req, res) => {
-  const { googleId, email, name, avater } = req.user;
+  const { googleId, githubId, email, name, avatar } = req.user;
 
-  let user = await User.findOne({ oauthId: profile.id });
+  // Determine OAuth provider
+  const oauthProvider = googleId ? "google" : githubId ? "github" : null;
+  if (!oauthProvider) {
+    return res.status(400).json({ message: "OAuth provider not found" });
+  }
 
+  // Find existing user
+  let user = await User.findOne({
+    $or: [{ googleId }, { githubId }, { email }],
+  });
+
+  // Create new user if not exists
   if (!user) {
-    const user = await User.create({
-      oauthId: googleId,
+    user = await User.create({
+      googleId,
+      githubId,
       username: email.split("@")[0],
-      email: email,
-      avater: avater,
+      email,
+      avatar,
       fullName: name,
     });
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-    user._id
-  );
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
+  // Generate tokens
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
 
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-      new ApiResponse(
-        200,
-        { user, accessToken, refreshToken },
-        "user register successfully"
-      )
-    );
+  // Set cookies
+  const cookieOptions = { httpOnly: true, secure: false }; // Set secure: true in production
+  res.cookie("accessToken", accessToken, cookieOptions);
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  // Redirect to frontend with tokens and user info in query params
+  const frontendCallbackUrl = new URL(`${process.env.CORS_ORIGIN}/${oauthProvider}/callback`);
+  frontendCallbackUrl.searchParams.set("success", "true");
+  frontendCallbackUrl.searchParams.set("accessToken", accessToken);
+  frontendCallbackUrl.searchParams.set("refreshToken", refreshToken);
+  frontendCallbackUrl.searchParams.set("user", encodeURIComponent(JSON.stringify(user)));
+
+  return res.redirect(frontendCallbackUrl.toString());
 });
-
+  
 const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
   console.log("data from frontend:", req.body);
@@ -276,7 +284,9 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(new ApiResponse(200, req.user, "User fetched successfully"));
+    .json(
+      new ApiResponse(200, { user: req.user }, "User fetched successfully", true)
+    );
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {

@@ -13,6 +13,7 @@ import Account from "../pages/account";
 import Premium from "../pages/Premium";
 import LikedVideo from "../pages/likedVideo";
 import Update from "../pages/dashboad/update";
+import GoogleCallback from "../utils/googleGithublogin";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: "/update/:id",
         element: <Update />,
+      },
+      {
+        path: "/google/callback",
+        element: <GoogleCallback />, // handle OAuth callback
       },
     ],
   },

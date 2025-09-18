@@ -2,13 +2,22 @@ import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+// Define schema
 const userSchema = new Schema(
   {
-    oauthId: {
+    // OAuth IDs (optional, depending on provider)
+    googleId: {
       type: String,
       unique: true,
-      sparse: true, // allows null/undefined values
+      sparse: true, // allows null
     },
+    githubId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    // Common fields
     username: {
       type: String,
       required: true,
@@ -35,7 +44,7 @@ const userSchema = new Schema(
       required: true,
     },
     coverImage: {
-      type: String, // cloudinary url
+      type: String,
     },
     watchHistory: [
       {
@@ -43,34 +52,39 @@ const userSchema = new Schema(
         ref: "Video",
       },
     ],
+
+    // Local auth
     password: {
       type: String,
       required: function () {
-        // password is only required if NO oauth IDs are present
-        return !this.googleId && !this.githubId && !this.facebookId;
+        // password is required ONLY if no OAuth provider is linked
+        return !this.googleId && !this.githubId;
       },
     },
+
     refreshToken: {
       type: String,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
+// 🔑 Pre-save hook to hash password if modified
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+  if (!this.isModified("password") || !this.password) {
     return next();
   }
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
+// 🔑 Method: Check password
 userSchema.methods.isPasswordCorrect = async function (password) {
+  if (!this.password) return false; // no password for OAuth users
   return await bcrypt.compare(password, this.password);
 };
 
+// 🔑 Method: Generate Access Token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -80,21 +94,18 @@ userSchema.methods.generateAccessToken = function () {
       fullName: this.fullName,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRES,
-    }
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRES }
   );
 };
 
+// 🔑 Method: Generate Refresh Token
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
-    {
-      _id: this._id,
-    },
+    { _id: this._id },
     process.env.REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRES,
-    }
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRES }
   );
 };
+
+// Export model
 export const User = mongoose.model("User", userSchema);
