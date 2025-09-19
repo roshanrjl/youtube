@@ -5,6 +5,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { sendEmail } from "../utils/sendMail.js";
+import { generateOtp } from "../utils/generateotp.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -110,7 +112,9 @@ const OAuthCallback = asyncHandler(async (req, res) => {
   }
 
   // Generate tokens
-  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+    user._id
+  );
 
   // Set cookies
   const cookieOptions = { httpOnly: true, secure: false }; // Set secure: true in production
@@ -118,15 +122,20 @@ const OAuthCallback = asyncHandler(async (req, res) => {
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
   // Redirect to frontend with tokens and user info in query params
-  const frontendCallbackUrl = new URL(`${process.env.CORS_ORIGIN}/${oauthProvider}/callback`);
+  const frontendCallbackUrl = new URL(
+    `${process.env.CORS_ORIGIN}/${oauthProvider}/callback`
+  );
   frontendCallbackUrl.searchParams.set("success", "true");
   frontendCallbackUrl.searchParams.set("accessToken", accessToken);
   frontendCallbackUrl.searchParams.set("refreshToken", refreshToken);
-  frontendCallbackUrl.searchParams.set("user", encodeURIComponent(JSON.stringify(user)));
+  frontendCallbackUrl.searchParams.set(
+    "user",
+    encodeURIComponent(JSON.stringify(user))
+  );
 
   return res.redirect(frontendCallbackUrl.toString());
 });
-  
+
 const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
   console.log("data from frontend:", req.body);
@@ -281,11 +290,83 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
+const requsentOtp = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "didn't receive email");
+  }
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(400, "user with provided email doesn't exist");
+  }
+
+  const otp = generateOtp();
+  const optExpiry = Date.now() + 2 * 60 * 1000; //expires in 2 minutes
+
+  user.resetOpt = otp;
+  user.resetOptExpiry = optExpiry;
+  await user.save();
+
+  await sendEmail(user.email, "password reset otp", `your OPT is ${otp}`);
+
+  res.json({ message: "OTP send to your email" });
+});
+
+const verifyOtp = asyncHandler(async (req, res) => {
+  const { otp, email } = req.body;
+  if (!otp) {
+    throw new ApiError(400, "didn't get your otp");
+  }
+
+  if (!otp) {
+    throw new ApiError(400, "didnot receive token ");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(400, "couldnot found user");
+  }
+  if (user.resetOpt != otp) {
+    return res.status(400).json(new ApiResponse(400, {}, "Invalid OTP"));
+  }
+  if (Date.now > resetOptExpiry) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, {}, "OTP is expired  create new one and try again")
+      );
+  }
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { email, newPassword } = req.body;
+  if (!newPassword) {
+    throw new ApiError(400, "didnot get updated password");
+  }
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(400, "user not found");
+  }
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password reset successfully"));
+});
+
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { user: req.user }, "User fetched successfully", true)
+      new ApiResponse(
+        200,
+        { user: req.user },
+        "User fetched successfully",
+        true
+      )
     );
 });
 
@@ -510,4 +591,7 @@ export {
   getUserChannelProfile,
   getWatchHistory,
   OAuthCallback,
+  requsentOtp,
+  verifyOtp,
+  resetPassword
 };

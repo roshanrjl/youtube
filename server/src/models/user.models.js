@@ -65,6 +65,12 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    resetOpt:{
+      type:String
+    },
+    resetOptExpiry:{
+      type:String
+    }
   },
   { timestamps: true }
 );

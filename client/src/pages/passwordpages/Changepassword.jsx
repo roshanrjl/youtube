@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,6 +11,9 @@ import { Input } from "../../components/components/ui/input";
 import { Button } from "../../components/components/ui/button";
 
 function Changepassword() {
+  const [newPassword, setNewPassword]= useState()
+  const [oldPassword, setOldPassword]= useState()
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
       <Card className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700">
@@ -49,7 +51,9 @@ function Changepassword() {
         </CardContent>
 
         <CardFooter className="px-6 py-4 flex flex-wrap gap-3">
-          <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md px-4 py-2 transition-colors">
+          <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md px-4 py-2 transition-colors"
+          
+          >
             Change Password
           </Button>
           <Button className="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500 text-white rounded-md px-4 py-2 transition-colors">
