@@ -24,8 +24,8 @@ export const refreshAccessToken = () => {
   );
 };
 
-export const changeCurrentPassword =()=>{
-  return apiClient.post("users/change-password")
+export const changeCurrentPassword =(password)=>{
+  return apiClient.post("users/change-password",password)
 }
 
 export const getCurrentUser =()=>{
@@ -58,4 +58,15 @@ export const googlelogin=()=>{
 
 export const githublogin=()=>{
   return apiClient.get("users/github")
+}
+export const SendEmail=(email)=>{
+  return apiClient.get("users/requestOtp",email)
+}
+
+export const verifyOtp=(otp)=>{
+  return apiClient.post("user/verifyOtp",otp)
+}
+
+export const resetPassword = (password)=>{
+  return apiClient.post("users/resetpassword", password)
 }

@@ -290,7 +290,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
-const requsentOtp = asyncHandler(async (req, res) => {
+const requestOtp = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
@@ -591,7 +591,7 @@ export {
   getUserChannelProfile,
   getWatchHistory,
   OAuthCallback,
-  requsentOtp,
+  requestOtp,
   verifyOtp,
   resetPassword
 };

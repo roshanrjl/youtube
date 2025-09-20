@@ -9,9 +9,13 @@ import {
 } from "../../components/components/ui/card";
 import { Input } from "../../components/components/ui/input";
 import { Button } from "../../components/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { verifyOtp } from "../../api/userApi/userapi";
 
 function SendOtp() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+
+  const navigate = useNavigate()
 
   // Handle input change
   const handleChange = (value, index) => {
@@ -26,6 +30,21 @@ function SendOtp() {
       }
     }
   };
+
+  const handleData=async()=>{
+    try{
+      const response = await verifyOtp({otp})
+      if(response.status == 200){
+        // ToDo:make the toast which display "otp verify successfully"
+        navigate("/resetPassword")
+      }else{
+        // ToDo:make the toast which display "invalid Otp" 
+      }
+
+    }catch(error){
+      console.error("something went wrong")
+    }
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
@@ -61,13 +80,23 @@ function SendOtp() {
         </CardContent>
 
         <CardFooter className="px-6 py-4 flex flex-wrap gap-3 justify-center">
-          <Button className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-600 text-white rounded-md px-6 py-2 transition-colors">
+          <Button className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-600 text-white rounded-md px-6 py-2 transition-colors"
+          onClick={handleData()}          
+          >
             Verify
           </Button>
-          <Button className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-600 text-white rounded-md px-6 py-2 transition-colors">
+          <Button className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-600 text-white rounded-md px-6 py-2 transition-colors"
+          onClick={()=>(
+            navigate("/sendEmail")
+          )}
+          >
             back
           </Button>
-          <Button className="bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-md px-6 py-2 transition-colors">
+          <Button className="bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-md px-6 py-2 transition-colors"
+          onClick={()=>(
+            navigate("/")
+          )}
+          >
             Cancel
           </Button>
         </CardFooter>
