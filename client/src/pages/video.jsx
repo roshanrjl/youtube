@@ -5,12 +5,14 @@ import {
   CardFooter,
 } from "../components/components/ui/card";
 import Mycard from "../components/Card";
-import { Link, useParams , useLocation } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import {
   getVideoById,
   getAllVideos,
   addViews,
 } from "../api/videosapi/videoapi";
+import { toggleVideoLike } from "../api/likedApi/likedapi";
+import { Input } from "../components/components/ui/input";
 
 function Video() {
   const { id } = useParams();
@@ -18,38 +20,45 @@ function Video() {
   const [loading, setLoading] = useState(true);
   const [allvideo, setAllVideo] = useState(null);
   const [views, setViews] = useState();
-    const location = useLocation();
+  const location = useLocation();
   const fromHome = location.state?.fromHome || false;
+  const [videoLike, setVideoLike] = useState(0);
+  const [commentLike, setCommentLike] = useState();
 
+  useEffect(() => {
+    const lastViewedVideo = sessionStorage.getItem("lastViewedVideo");
 
- useEffect(() => {
-  const lastViewedVideo = sessionStorage.getItem("lastViewedVideo");
-
-  const incrementViews = async () => {
-    try {
-      
-      if (lastViewedVideo !== id) {
-        const response = await addViews(id);
-        setViews(response.data.data); 
-        sessionStorage.setItem("lastViewedVideo", id); 
-      } else {
-        
-        const response = await getVideoById(id);
-        setViews(response.data.data.views);
+    const incrementViews = async () => {
+      try {
+        if (lastViewedVideo !== id) {
+          const response = await addViews(id);
+          setViews(response.data.data);
+          sessionStorage.setItem("lastViewedVideo", id);
+        } else {
+          const response = await getVideoById(id);
+          setViews(response.data.data.views);
+        }
+      } catch (error) {
+        console.error("Error handling views:", error);
       }
+    };
+
+    incrementViews();
+  }, [id]);
+
+  // fetch toggle video like
+  const handleVideoLike = async () => {
+    try {
+      const response = await toggleVideoLike(id);
+      setVideoLike(response.data.data);
     } catch (error) {
-      console.error("Error handling views:", error);
+      console.log(
+        "something went wrong while liking/disliking the video" + error
+      );
     }
   };
 
-  incrementViews();
-}, [id]);
-
-
-
-
-
- 
+  // fetch comment
 
   // Fetch video by ID
   const fetchVideo = async () => {
@@ -75,6 +84,7 @@ function Video() {
   useEffect(() => {
     fetchVideo();
     fetchAllVideo();
+    handleVideoLike();
   }, [id]);
 
   if (loading) {
@@ -109,14 +119,14 @@ function Video() {
           </CardContent>
 
           {/* Video Title & Description */}
-          <CardFooter className="flex flex-col gap-2 p-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+          <CardFooter className="flex flex-col -p-4 -mb-2.5">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               {video.title}
-            </h1>
+            </h3>
           </CardFooter>
 
           {/* Channel info + Like/Subscribe */}
-          <CardFooter className="flex flex-col sm:flex-row sm:items-center justify-between border-t border-gray-200 dark:border-gray-700 p-4 gap-4">
+          <CardFooter className="flex flex-col sm:flex-row sm:items-center justify-between border-t border-gray-200 dark:border-gray-700 -p-4 -mt-3 gap-4">
             {/* Profile & Subscribe */}
             <div className="flex items-center gap-3">
               <img
@@ -134,11 +144,11 @@ function Video() {
 
             {/* Like & Comment */}
             <div className="flex gap-3">
-              <button className="px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                👍 Like
-              </button>
-              <button className="px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                💬 Comment
+              <button
+                className="px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                onClick={handleVideoLike}
+              >
+                👍 {videoLike.likesCount}
               </button>
             </div>
           </CardFooter>
@@ -151,6 +161,20 @@ function Video() {
             value={video.description}
             readOnly
           />
+        </div>
+        <hr />
+        <div className="flex items-center w-full border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+          <input
+            type="text"
+            placeholder="Add comments"
+            className="flex-1 p-2 text-gray-700 dark:text-gray-300 text-sm sm:text-base outline-none bg-white dark:bg-gray-900"
+          />
+          <button
+            type="button"
+            className="px-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            💬
+          </button>
         </div>
       </div>
 
